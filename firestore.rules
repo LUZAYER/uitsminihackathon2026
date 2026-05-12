@@ -1,0 +1,43 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper Primitives
+    function isSignedIn() { return request.auth != null; }
+    function isOwner(ownerId) { return isSignedIn() && request.auth.uid == ownerId; }
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+    function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
+    
+    // Entity Validations
+    function isValidInvestigation(data) {
+      return data.keys().hasAll(['fileName', 'fileType', 'status', 'ownerId', 'createdAt']) &&
+             data.fileName is string && data.fileName.size() <= 256 &&
+             data.fileType in ['image', 'video', 'audio'] &&
+             data.status in ['pending', 'analyzing', 'completed', 'failed'] &&
+             data.ownerId == request.auth.uid &&
+             data.createdAt == request.time;
+    }
+
+    match /investigations/{caseId} {
+      allow read: if isOwner(existing().ownerId) || (existing().isPublic == true);
+      allow create: if isSignedIn() && isValidId(caseId) && isValidInvestigation(incoming());
+      allow update: if isOwner(existing().ownerId) && 
+                      incoming().diff(existing()).affectedKeys().hasOnly(['isPublic', 'status', 'summary', 'trustScore', 'verdict']);
+      allow delete: if isOwner(existing().ownerId);
+    }
+
+    match /threat_feed/{feedId} {
+      allow read: if isSignedIn();
+      allow write: if false; // Only system-writable via admin SDK / Cloud Functions
+    }
+
+    match /users/{userId} {
+      allow read, write: if isOwner(userId);
+    }
+  }
+}

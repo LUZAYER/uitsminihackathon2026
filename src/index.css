@@ -1,0 +1,59 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  
+  /* Elegant Dark Theme Palette */
+  --color-cyber-lime: #0ea5e9;    /* Theme Sky Blue Accent */
+  --color-cyber-navy: #020617;    /* Theme Deep Navy Body */
+  --color-cyber-slate: #0f172a;   /* Theme Surface Color */
+  --color-cyber-alert: #fb7185;   /* Theme Rose Danger/Alert */
+  --color-cyber-border: #1e293b;  /* Theme Border Color */
+}
+
+:root {
+  background-color: var(--color-cyber-navy);
+  color: #e2e8f0;
+}
+
+@layer base {
+  body {
+    @apply font-sans;
+    background-color: var(--color-cyber-navy);
+    background-image: radial-gradient(circle at 50% 0%, #0f172a 0%, #020617 70%);
+  }
+}
+
+.glass-panel {
+  @apply backdrop-blur-xl bg-cyber-slate/50 border border-cyber-border;
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.03);
+}
+
+.neon-glow-lime {
+  box-shadow: 0 0 15px rgba(14, 165, 233, 0.2);
+}
+
+.neon-glow-alert {
+  box-shadow: 0 0 15px rgba(251, 113, 133, 0.3);
+}
+
+.radar-grid {
+  background-image: linear-gradient(rgba(14,165,233,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(14,165,233,0.05) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-cyber-navy);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-cyber-border);
+  border-radius: 4px;
+}
+

@@ -1,0 +1,46 @@
+{
+  "entities": {
+    "investigation": {
+      "title": "Forensic Investigation",
+      "description": "Represents a media authenticity analysis case.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique identifier for the investigation." },
+        "fileName": { "type": "string", "description": "Name of the analyzed file." },
+        "fileType": { "type": "string", "enum": ["image", "audio", "video"], "description": "Type of media analyzed." },
+        "status": { "type": "string", "enum": ["pending", "analyzing", "completed", "failed"], "description": "Current status of the investigation." },
+        "trustScore": { "type": "number", "description": "Authenticity confidence score (0-100)." },
+        "verdict": { "type": "string", "enum": ["Authentic", "Likely Authentic", "Suspicious", "Manipulated", "AI-Generated", "High-Risk"], "description": "The final classification." },
+        "summary": { "type": "string", "description": "AI-generated summary of findings." },
+        "artifacts": { "type": "array", "description": "Detected forensic artifacts.", "items": { "type": "object" } },
+        "metadata": { "type": "object", "description": "Extracted technical metadata." },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "ownerId": { "type": "string", "description": "UID of the analyst who created this case." },
+        "isPublic": { "type": "boolean", "description": "Whether this case is visible in global intel." }
+      },
+      "required": ["id", "fileName", "fileType", "status", "ownerId", "createdAt"]
+    },
+    "threatFeed": {
+      "title": "Threat Intelligence",
+      "description": "Real-time misinformation threat detections.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "location": { "type": "object" },
+        "intensity": { "type": "number" },
+        "type": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      }
+    }
+  },
+  "firestore": {
+    "investigations": {
+      "schema": "investigation",
+      "description": "Collection of forensic analysis cases."
+    },
+    "threat_feed": {
+      "schema": "threatFeed",
+      "description": "Global misinformation event feed."
+    }
+  }
+}
